@@ -133,7 +133,7 @@ macro_rules! either_many {
                             use Matches::*;
                             $varn
                         };
-                    })else+ if cfg!(debug_assertions) {
+                    })else+ else if cfg!(debug_assertions) {
                         unreachable!("None of the variants were matched. At least one should be.");
                     }
                 }
