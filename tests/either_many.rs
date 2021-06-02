@@ -77,7 +77,11 @@ struct LeftCount(u32);
 #[derive(Debug, PartialEq, Eq)]
 struct RightCount(u32);
 
-bevy_either::either_many!(readonly MyEither, Left(&'static LeftElem), Right(&'static RightElem));
+bevy_either::either_many!(
+    readonly MyEither<'a, 'b>,
+    Left(&'a LeftElem),
+    Right(&'b RightElem),
+);
 
 #[test]
 fn main() {

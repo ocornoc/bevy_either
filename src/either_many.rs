@@ -3,14 +3,14 @@ macro_rules! either_many {
     (@__first $first:tt $(, $($others:tt),+)?) => {
         $first
     };
-    (readonly $(#[$($m:meta),*])? $name:ident, $($varn:ident($($vart:tt)+)),+ $(, )?) => {
-        $crate::either_many!($(#[$($m),*])? $name, $($varn($($vart)+)),+);
+    (readonly $(#[$($m:meta),*])? $name:ident $(< $($lf:lifetime),* $(, )? >)?, $($varn:ident($($vart:tt)+)),+ $(, )?) => {
+        $crate::either_many!($(#[$($m),*])? $name $(< $($lf),*>)?, $($varn($($vart)+)),+);
 
         $crate::exports::paste!{
-            unsafe impl ::bevy::ecs::query::ReadOnlyFetch for [<__ $name:lower>]::[<$name Fetch>] {}
+            unsafe impl $(< $($lf),*>)? ::bevy::ecs::query::ReadOnlyFetch for [<__ $name:lower>]::[<$name Fetch>] $(< $($lf),*>)? {}
         }
     };
-    ($(#[$($m:meta),*])? $name:ident, $($varn:ident($($vart:tt)+)),+ $(, )?) => {
+    ($(#[$($m:meta),*])? $name:ident $(< $($lf:lifetime),* >)?, $($varn:ident($($vart:tt)+)),+ $(, )?) => {
         $crate::exports::paste!{
             $(#[$($m),*])?
             #[doc =
@@ -20,7 +20,7 @@ macro_rules! either_many {
                 "that [`" $name "`] can fulfill.\n\nIn priority order, [`" $name "`] matches:"
                 $("\n * [`" $name "::" $varn "(_)`](" $name "::" $varn ")")+
             ]
-            pub enum $name {
+            pub enum $name $(< $($lf),*>)? {
                 $($varn(<
                     <$($vart)+ as ::bevy::ecs::query::WorldQuery>::Fetch
                     as ::bevy::ecs::query::Fetch<'static>
@@ -46,11 +46,11 @@ macro_rules! either_many {
             }
 
             #[allow(non_snake_case)]
-            pub struct [<$name State>] {
+            pub struct [<$name State>] $(< $($lf),*>)? {
                 $($varn: <$($vart)+ as WorldQuery>::State),+
             }
 
-            unsafe impl FetchState for [<$name State>] {
+            unsafe impl $(< $($lf),*>)? FetchState for [<$name State>] $(< $($lf),*>)? {
                 fn init(world: &mut World) -> Self {
                     Self {
                         $($varn: <$($vart)+ as WorldQuery>::State::init(world)),+
@@ -79,14 +79,14 @@ macro_rules! either_many {
             }
 
             #[allow(non_snake_case)]
-            pub struct [<$name Fetch>] {
+            pub struct [<$name Fetch>] $(< $($lf),*>)? {
                 matches: Matches,
                 $($varn: <$($vart)+ as WorldQuery>::Fetch),+
             }
 
-            impl Fetch<'_> for [<$name Fetch>] {
-                type Item = $name;
-                type State = [<$name State>];
+            impl $(< $($lf),*>)? Fetch<'_> for [<$name Fetch>] $(< $($lf),*>)? {
+                type Item = $name $(< $($lf),*>)?;
+                type State = [<$name State>] $(< $($lf),*>)?;
 
                 fn is_dense(&self) -> bool {
                     $(self.$varn.is_dense())||+
@@ -155,9 +155,9 @@ macro_rules! either_many {
                 }
             }
 
-            impl WorldQuery for $name {
-                type Fetch = [<$name Fetch>];
-                type State = [<$name State>];
+            impl $(< $($lf),*>)? WorldQuery for $name $(< $($lf),*>)? {
+                type Fetch = [<$name Fetch>] $(< $($lf),*>)?;
+                type State = [<$name State>] $(< $($lf),*>)?;
             }
         }}
     };
