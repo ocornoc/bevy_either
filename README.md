@@ -9,7 +9,7 @@ Given two world queries `T` and `U`, `Either<T, U>` provides a world query that 
 `T`'s item or the `U`'s item. If both `T` and `U` successfully match an entity, then only `T`'s item
 is given, e.g. there isn't a "both" variant.
 
-## `EitherBoth<T, U>`EitherBoth
+## `EitherBoth<T, U>`
 
 Similarly to `Either<T, U>`, `EitherBoth<T, U>` does allow one to match over `T`'s item or `U`'s
 item. What sets it apart is the `Both(t, u)` variant, allowing both `T`'s and `U`'s items to be
