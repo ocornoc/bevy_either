@@ -87,7 +87,7 @@ impl<'w, T: Fetch<'w>, U: Fetch<'w>> Fetch<'w> for EitherFetch<T, U> {
     }
 }
 
-unsafe impl<'w, T: Fetch<'w>, U: Fetch<'w>> ReadOnlyFetch for EitherFetch<T, U> {}
+unsafe impl<T: ReadOnlyFetch, U: ReadOnlyFetch> ReadOnlyFetch for EitherFetch<T, U> {}
 
 impl<T: WorldQuery, U: WorldQuery> WorldQuery for Either<T, U> {
     type Fetch = EitherFetch<T::Fetch, U::Fetch>;
