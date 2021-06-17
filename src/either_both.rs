@@ -57,7 +57,7 @@ pub struct EitherBothFetch<T, U> {
     matches: Matches,
 }
 
-unsafe impl<'w, T: Fetch<'w>, U: Fetch<'w>> ReadOnlyFetch for EitherBothFetch<T, U> {}
+unsafe impl<T: ReadOnlyFetch, U: ReadOnlyFetch> ReadOnlyFetch for EitherBothFetch<T, U> {}
 
 impl<'w, T: Fetch<'w>, U: Fetch<'w>> Fetch<'w> for EitherBothFetch<T, U> {
     type Item = EitherBoth<T::Item, U::Item>;
